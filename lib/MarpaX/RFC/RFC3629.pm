@@ -9,6 +9,38 @@ package MarpaX::RFC::RFC3629;
 
 # AUTHORITY
 
+=head1 DESCRIPTION
+
+This module is parsing byte sequences as per RFC3629. It will croak if parsing fails.
+
+=head1 SYNOPSIS
+
+    use strict;
+    use warnings FATAL => 'all';
+    use MarpaX::RFC::RFC3629;
+    use Encode qw/encode/;
+    use Data::HexDump;
+    #
+    # Parse octets
+    #
+    my $orig = "\x{0041}\x{2262}\x{0391}\x{002E}";
+    my $octets = encode('UTF-8', $orig, Encode::FB_CROAK);
+    my $string = MarpaX::RFC::RFC3629->new($octets)->output;
+    print STDERR "Octets:\n" . HexDump($octets) . "\n";
+    print STDERR "String:\n" . HexDump($string) . "\n";
+
+=head1 SUBROUTINES/METHODS
+
+=head2 new(ClassName $class: Bytes $octets --> InstanceOf['MarpaX::RFC::RFC3629'])
+
+Instantiate a new object. Takes as parameter the octets.
+
+=head2 output(InstanceOf['MarpaX::RFC::RFC3629'] $self --> Str)
+
+Returns the UTF-8 string (utf8 flag might be on, depends).
+
+=cut
+
 use Carp qw/croak/;
 use Encode qw/decode/;
 use Marpa::R2;
@@ -38,6 +70,14 @@ sub _trigger_input { my $self = shift;
                      $self->_set_output(decode($self->encoding, $value, Encode::FB_CROAK))
                    }
 sub _concat        { shift; join('', @_) }
+
+=head1 SEE ALSO
+
+L<Syntax of UTF-8 Byte Sequences|https://tools.ietf.org/html/rfc3629#section-4>
+
+L<Marpa::R2>
+
+=cut
 
 1;
 
