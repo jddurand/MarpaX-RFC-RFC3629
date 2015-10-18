@@ -9,7 +9,7 @@
 use strict;
 use warnings FATAL => 'all';
 use Encode qw/encode encode_utf8/;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 binmode STDOUT, ':utf8';
 binmode STDERR, ':utf8';

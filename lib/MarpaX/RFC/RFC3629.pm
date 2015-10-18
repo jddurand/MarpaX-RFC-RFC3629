@@ -48,7 +48,6 @@ use Types::Standard -all;
 use Types::Encodings qw/Bytes/;
 
 has input     => ( is => 'ro',  isa => Bytes, required => 1, trigger => 1);
-has encoding  => ( is => 'ro',  isa => Str, default => sub { 'UTF-8' } );
 has output    => ( is => 'rwp', isa => Str|Undef);
 
 our $DATA = do { local $/; <DATA> };
@@ -61,13 +60,7 @@ sub BUILDARGS {
   return { @args };
 }
 
-sub _trigger_input { my $self = shift;
-                     my $value = ${$G->parse(\shift, {
-                                                      # trace_terminals => 1,
-                                                      # trace_values => 1
-                                                     })};
-                     $self->_set_output(decode($self->encoding, $value, Encode::FB_CROAK))
-                   }
+sub _trigger_input { shift->_set_output(decode('UTF-8', ${$G->parse(\shift)}, Encode::FB_CROAK)) }
 sub _concat        { shift; join('', @_) }
 
 =head1 SEE ALSO
@@ -81,6 +74,7 @@ L<Marpa::R2>
 1;
 
 __DATA__
+lexeme default = latm => 1
 :default ::= action => MarpaX::RFC::RFC3629::_concat
 :start        ::= <UTF8 octets>
 <UTF8 octets> ::= <UTF8 char>*
@@ -88,13 +82,13 @@ __DATA__
                 | <UTF8 2>
                 | <UTF8 3>
                 | <UTF8 4>
-<UTF8 1>      ::=                                                 [\x{00}-\x{7F}]
-<UTF8 2>      ::=                                 [\x{C2}-\x{DF}]     <UTF8 tail>
-<UTF8 3>      ::=                        [\x{E0}] [\x{A0}-\x{BF}]     <UTF8 tail>
+<UTF8 1>        ~                                                 [\x{00}-\x{7F}]
+<UTF8 2>        ~                                 [\x{C2}-\x{DF}]     <UTF8 tail>
+<UTF8 3>        ~                        [\x{E0}] [\x{A0}-\x{BF}]     <UTF8 tail>
                 |                 [\x{E1}-\x{EC}]     <UTF8 tail>     <UTF8 tail>
                 |                        [\x{ED}] [\x{80}-\x{9F}]     <UTF8 tail>
                 |                 [\x{EE}-\x{EF}]     <UTF8 tail>     <UTF8 tail>
-<UTF8 4>      ::=        [\x{F0}] [\x{90}-\x{BF}]     <UTF8 tail>     <UTF8 tail>
+<UTF8 4>        ~        [\x{F0}] [\x{90}-\x{BF}]     <UTF8 tail>     <UTF8 tail>
                 | [\x{F1}-\x{F3}]     <UTF8 tail>     <UTF8 tail>     <UTF8 tail>
                 |        [\x{F4}] [\x{80}-\x{8F}]     <UTF8 tail>     <UTF8 tail>
-<UTF8 tail>   ::= [\x{80}-\x{BF}]
+<UTF8 tail>     ~ [\x{80}-\x{BF}]
