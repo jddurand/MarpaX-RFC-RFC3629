@@ -1,0 +1,10 @@
+Changelog for MarpaX-RFC-RFC3629
+
+0.001 2015-10-18T10:01:08
+ [Jean-Damien Durand <jeandamiendurand@free.fr>]
+ - dist.ini: add Str in stopwords
+ - Removed encoding attribute and fixed nb of tests for Test::More
+ - Removed unused module
+ - POD
+ - Make dzil happy
+ - First commit
