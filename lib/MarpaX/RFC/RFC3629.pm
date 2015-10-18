@@ -41,7 +41,6 @@ Returns the UTF-8 string (utf8 flag might be on, depends).
 
 =cut
 
-use Carp qw/croak/;
 use Encode qw/decode/;
 use Marpa::R2;
 use Moo;
