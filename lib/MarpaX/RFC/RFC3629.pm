@@ -2,6 +2,13 @@ use strict;
 use warnings FATAL => 'all';
 
 package MarpaX::RFC::RFC3629;
+
+# ABSTRACT: Marpa parsing of UTF-8 byte sequences as per RFC3629
+
+# VERSION
+
+# AUTHORITY
+
 use Carp qw/croak/;
 use Encode qw/decode/;
 use Marpa::R2;
